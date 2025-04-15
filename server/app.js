@@ -1,0 +1,36 @@
+// server/app.js
+
+const express = require('express');
+const app = express();
+const cookieParser = require('cookie-parser');
+const ErrorHandler = require('./utils/ErrorHandler');
+const cors = require("cors");
+// Add this import at the top
+const fileUpload = require('express-fileupload');
+const errorhandlermiddleware=require("./middleware/error")
+
+// Add this middleware before your routes
+app.use(fileUpload({
+  useTempFiles: true
+}));
+
+// Middleware
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); // Required for form submissions
+app.use(cookieParser())
+app.use(cors({
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
+
+// Sample route
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
+
+const user = require("./controller/userController");
+
+app.use("/user", user);
+  app.use(errorhandlermiddleware)
+module.exports = app; // Ensure the app is exported correctly
