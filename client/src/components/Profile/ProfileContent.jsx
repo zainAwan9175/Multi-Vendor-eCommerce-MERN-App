@@ -74,7 +74,9 @@ const ProfileContent = ({ active }) => {
   }
 
   return (
-    <div className="w-full md:pl-4">
+    
+<div className="w-full flex justify-center">
+<div className="w-full lg:w-[70%] ">
       {/* profile */}
       {active === 1 && (
         <>
@@ -229,6 +231,7 @@ const ProfileContent = ({ active }) => {
         </div>
       )}
     </div>
+</div>
   )
 }
 

@@ -5,10 +5,11 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const cloudinary = require("cloudinary");
-
+const mongoose=require("mongoose")
 const sendEmail = require("../utils/sendEmail");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated } = require("../middleware/auth");
+
 cloudinary.config({
   cloud_name: 'your-cloud-name',
   api_key: 'your-api-key',
@@ -173,5 +174,99 @@ router.get(
     }
   })
 );
+router.put(
+  "/update-avatar",
+  isAuthenticated,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const { avatar } = req.body ;
+      const userId = req.user?._id;
+
+      const user = await User.findById(userId);
+
+      if (!user) {
+          return next(new ErroreHandler("User not found", 404));
+      }
+
+      if (avatar) {
+          // Delete the old avatar if it exists
+          if (user.avatar?.public_id) {
+              await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+          }
+
+          // Upload the new avatar
+          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+              folder: "avatar",
+              width: 150,
+          });
+
+          // Update user's avatar
+          user.avatar = {
+              public_id: myCloud.public_id,
+              url: myCloud.url,
+          };
+
+          // Save updated user information
+          await user.save();
+    
+      }
+
+      // Respond to the client
+      res.status(200).json({
+          success: true,
+           user
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+router.put(
+  "/update-user-password",
+  isAuthenticated, // Assuming isAuthenticated is a middleware for checking the user's authentication
+  catchAsyncError(async (req, res, next) => {
+    try {
+      // Get the data from the request body
+      const { oldPassword, newPassword, confirmPassword } = req.body;
+
+      // Debugging line to check the user ID
+      console.log('User ID:', req.user._id);
+
+      // Check if new password and confirm password match
+      if (newPassword !== confirmPassword) {
+        return next(new ErrorHandler("New password and confirm password do not match", 400));
+      }
+
+      // Check if the user exists
+      const user = await User.findById(req.user._id.toString()).select('+password');
+
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+      console.log(user)
+
+      // Check if the old password matches
+      const isMatch = await user.comparePassword(oldPassword);
+      if (!isMatch) {
+        return next(new ErrorHandler("Old password is incorrect", 400));
+      }
+
+
+
+
+      await user.save();
+
+      // Respond with a success message
+      res.status(200).json({
+        success: true,
+        message: "Password updated successfully",
+      });
+    } catch (error) {
+      // Pass the error to the error handling middleware
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
 
 module.exports = router;
