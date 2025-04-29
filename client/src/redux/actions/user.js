@@ -26,3 +26,33 @@ export const loadUser = () => async (dispatch) => {
     });
   }
 };
+
+
+//load seller
+export const loadSeller = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "LoadSellerRequest",
+    });
+
+    // Await the axios call
+    const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/shop/getSeller`, {
+      withCredentials: true,
+    });
+
+    console.log(res);
+
+    dispatch({
+      type: "LoadSellerSuccess",
+      payload: res.data.seller,
+    });
+
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "LoadSellerFail",
+      payload: error.response?.data?.message || "Something went wrong",
+    });
+  }
+};
+

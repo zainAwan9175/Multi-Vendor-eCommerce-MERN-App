@@ -1,47 +1,68 @@
 import './App.css';
 import React from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import { Login, ActivationPage, SignUpPage,HomePage,ProductsPage,BestSellingPage,EventsPage,FAQPage,ProductDetailsPage,ProfilePage} from './Routes';
+import { Login, ActivationPage, SignUpPage,HomePage,ProductsPage,BestSellingPage,EventsPage,FAQPage,ProductDetailsPage,ProfilePage,ShopCreatePage,ShopLogin,ShopActivationPage} from './Routes';
 import { ToastContainer } from "react-toastify";
+import { ShopHomepage } from './ShopRoutes';
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for toast
 import { useEffect } from 'react';
 import Store from './redux/store';
 import ProtectedRoute from './ProctectedRoute';
 import { loadUser } from './redux/actions/user';
+import { loadSeller } from './redux/actions/user';
+
 import { useSelector } from 'react-redux';
+import sellerProtectedRoute from "./sellerProtectedRoute"
 
 
 import axios from 'axios';
 
 function App() {
-  const { user,isAuthenticated } = useSelector((state) => state.user)
+
+  const {loading, user,isAuthenticated } = useSelector((state) => state.user)
+ const {isloading, isSeller,seller } = useSelector((state) => state.seller);
+ console.log("shop",seller)
   useEffect(() => {
     Store.dispatch(loadUser());
-    
+    Store.dispatch(loadSeller());
+   
   }, []);
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-        <Route path="/" element={<HomePage/>}></Route>
-          <Route path="/login" element={<Login/>}></Route>
-          <Route path="/product/:id" element={<ProductDetailsPage/>}></Route>
-          <Route path="/best-selling" element={<BestSellingPage/>}></Route>
-          <Route path="/sign-up" element={<SignUpPage/>}></Route>
-          <Route path="/products" element={<ProductsPage/>}></Route>
-          <Route path="/activate/:activation_token" element={<ActivationPage />} />
-          <Route path="/test" element={<ActivationPage />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/faq" element={<FAQPage />} />
-          <Route path="/profile" element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-                      <ProfilePage />
-            </ProtectedRoute>
-    } />
-        </Routes>
-      </BrowserRouter>
+      {loading||isloading ? null:(
+         <BrowserRouter>
+         <Routes>
+         <Route path="/" element={<HomePage/>}></Route>
+           <Route path="/login" element={<Login/>}></Route>
+           <Route path="/product/:id" element={<ProductDetailsPage/>}></Route>
+           <Route path="/best-selling" element={<BestSellingPage/>}></Route>
+           <Route path="/sign-up" element={<SignUpPage/>}></Route>
+           <Route path="/products" element={<ProductsPage/>}></Route>
+           <Route path="/activate/:activation_token" element={<ActivationPage />} />
+           <Route path="/ShopActivationPage/:activation_token" element={<ShopActivationPage/>} />
+           <Route path="/test" element={<ActivationPage />} />
+           <Route path="/events" element={<EventsPage />} />
+           <Route path="/faq" element={<FAQPage />} />
+           <Route path="/shop-create" element={<ShopCreatePage />} />
+           <Route path="/shop-login" element={<ShopLogin />} />
+           <Route path="/shop/:id" element={
+            <sellerProtectedRoute isSeller={isSeller}>
+              <ShopHomepage />
+            </sellerProtectedRoute>
+           } />
+           <Route path="/profile" element={
+             <ProtectedRoute isAuthenticated={isAuthenticated}>
+                       <ProfilePage />
+             </ProtectedRoute>
+             
+     } />
+         </Routes>
+       </BrowserRouter>
+      )
+       
       
+      }
       {/* Add ToastContainer for notifications */}
       <ToastContainer 
         position="top-right"

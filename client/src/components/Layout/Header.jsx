@@ -23,12 +23,11 @@ const styles = {
 
 const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user) 
-  // const { isSeller } = useSelector((state) => state.seller);
+  const { isSeller } = useSelector((state) => state.seller);
   // const { wishlist } = useSelector((state) => state.wishlist);
   // const { cart } = useSelector((state) => state.cart);
   // const { allProducts } = useSelector((state) => state.products);
-  console.log("user")
-  console.log(user)
+
   const [searchTerm, setSearchTerm] = useState("")
   const [searchData, setSearchData] = useState(null)
   const [active, setActive] = useState(false)
@@ -262,14 +261,15 @@ const Header = ({ activeHeading }) => {
             ) : null}
           </div>
 
-          {/* <div className={`${styles.button}`}>
-            <Link to={`${isSeller ? "/dashboard" : "/shop-create"}`}>
+          <div className={`${styles.button}`}>
+            <Link to={`${isSeller ?"/dasboard":"/shop-create" }`}>
               <h1 className="text-[#fff] flex items-center">
                 {isSeller ? "Go Dashboard" : "Become Seller"}{" "}
+    
                 <IoIosArrowForward className="ml-1" />
               </h1>
             </Link>
-          </div> */}
+          </div>
         </div>
       </div>
 
