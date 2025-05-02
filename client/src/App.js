@@ -1,18 +1,18 @@
 import './App.css';
 import React from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import { Login, ActivationPage, SignUpPage,HomePage,ProductsPage,BestSellingPage,EventsPage,FAQPage,ProductDetailsPage,ProfilePage,ShopCreatePage,ShopLogin,ShopActivationPage} from './Routes';
+import { Login, ActivationPage, SignUpPage,HomePage,ProductsPage,BestSellingPage,EventsPage,FAQPage,ProductDetailsPage,ProfilePage,ShopCreatePage,ShopLogin,ShopActivationPage} from './routes/Routes';
 import { ToastContainer } from "react-toastify";
-import { ShopHomepage } from './ShopRoutes';
+import { ShopHomepage ,ShopDashboardPage} from './routes/ShopRoutes';
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for toast
 import { useEffect } from 'react';
 import Store from './redux/store';
-import ProtectedRoute from './ProctectedRoute';
+import ProtectedRoute from './routes/ProctectedRoute';
 import { loadUser } from './redux/actions/user';
 import { loadSeller } from './redux/actions/user';
 
 import { useSelector } from 'react-redux';
-import sellerProtectedRoute from "./sellerProtectedRoute"
+import sellerProtectedRoute from "./routes/sellerProtectedRoute"
 
 
 import axios from 'axios';
@@ -30,7 +30,7 @@ function App() {
 
   return (
     <>
-      {loading||isloading ? null:(
+   
          <BrowserRouter>
          <Routes>
          <Route path="/" element={<HomePage/>}></Route>
@@ -50,6 +50,14 @@ function App() {
             <sellerProtectedRoute isSeller={isSeller}>
               <ShopHomepage />
             </sellerProtectedRoute>
+            
+           } />
+
+            <Route path="/dashboard" element={
+            <sellerProtectedRoute isSeller={isSeller}>
+                <ShopDashboardPage></ShopDashboardPage>
+            </sellerProtectedRoute>
+            
            } />
            <Route path="/profile" element={
              <ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -59,10 +67,7 @@ function App() {
      } />
          </Routes>
        </BrowserRouter>
-      )
-       
       
-      }
       {/* Add ToastContainer for notifications */}
       <ToastContainer 
         position="top-right"
