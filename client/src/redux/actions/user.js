@@ -40,7 +40,7 @@ export const loadSeller = () => async (dispatch) => {
       withCredentials: true,
     });
 
-    console.log(res);
+
 
     dispatch({
       type: "LoadSellerSuccess",

@@ -31,8 +31,10 @@ app.get('/', (req, res) => {
 
 const user = require("./controller/userController");
 const shop=require("./controller/shopController")
+const product=require("./controller/productController")
 
 app.use("/user", user);
 app.use("/shop", shop);
+app.use("/product", product);
   app.use(errorhandlermiddleware)
 module.exports = app; // Ensure the app is exported correctly
