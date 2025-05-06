@@ -66,12 +66,12 @@ const ProductCard = ({ data, isEvent }) => {
         <Link
           to={`${
             isEvent === true
-              ? `/product/${data.id}?isEvent=true`
-              : `/product/${data.id}`
+              ? `/product/${data._id}?isEvent=true`
+              : `/product/${data._id}`
           }`}
         >
           <img
-            src={`${data.image_Url && data.image_Url[0]?.url}`}
+            src={`${data.images && data.images[0]?.url}`}
             alt=""
             className="w-full h-[170px] object-contain"
           />
@@ -82,8 +82,8 @@ const ProductCard = ({ data, isEvent }) => {
         <Link
           to={`${
             isEvent === true
-              ? `/product/${data.id}?isEvent=true`
-              : `/product/${data.id}`
+              ? `/product/${data._id}?isEvent=true`
+              : `/product/${data._id}`
           }`}
         >
           <h4 className="pb-3 font-[500]">
@@ -98,17 +98,17 @@ const ProductCard = ({ data, isEvent }) => {
           <div className="py-2 flex items-center justify-between">
             <div className="flex">
               <h5 className={`${styles.productDiscountPrice}`}>
-                {data.price === 0
-                  ? data.price
-                  : data.discount_price}
+                {data.originalPrice === 0
+                  ? data.originalPrice
+                  : data.discountPrice}
                 $
               </h5>
               <h4 className={`${styles.price}`}>
-                {data.price ? data.price + " $" : null}
+                {data.originalPrice ? data.originalPrice + " $" : null}
               </h4>
             </div>
             <span className="font-[400] text-[17px] text-[#68d284]">
-              {data?. total_sell} sold
+              {data?. sold_out} sold
             </span>
           </div>
         </Link>

@@ -28,7 +28,7 @@ req.user =user;
 
   exports.isSeller = catchAsyncError(async (req, res, next) => {
     const { seller_token } = req.cookies;
-    console.log(seller_token);
+
   
     if (!seller_token) {
       return next(new ErrorHandler("Login to access this resource", 401));

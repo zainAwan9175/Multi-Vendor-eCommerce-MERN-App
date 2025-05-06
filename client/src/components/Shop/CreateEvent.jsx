@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createProduct } from "../../redux/actions/product";
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
+import { createevent } from "../../redux/actions/event";
 
-const CreateProduct = () => {
+const CreateEvent = () => {
   const { seller } = useSelector((state) => state.seller);
-  const { success, error } = useSelector((state) => state.product);
+  const { success, error } = useSelector((state) => state.event);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -20,14 +20,42 @@ const CreateProduct = () => {
   const [originalPrice, setOriginalPrice] = useState();
   const [discountPrice, setDiscountPrice] = useState();
   const [stock, setStock] = useState();
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const handleStartDateChange = (e) => {
+    console.log(e.target.value)
+    const startDate = new Date(e.target.value);
+    const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
+    setStartDate(startDate);
+
+    setEndDate(null);
+    document.getElementById("end-date").min = minEndDate
+      .toISOString()
+      .slice(0, 10);
+  };
+
+  const handleEndDateChange = (e) => {
+    const endDate = new Date(e.target.value);
+    setEndDate(endDate);
+  };
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  const minEndDate = startDate
+    ? new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10)
+    : "";
 
   useEffect(() => {
     if (error) {
       toast.error(error);
     }
     if (success) {
-      toast.success("Product created successfully!");
-      navigate("/dashboard");
+
+      toast.success("Event created successfully!");
+      navigate("/dashboard-events");
       window.location.reload();
     }
   }, [dispatch, error, success, navigate]);
@@ -48,33 +76,35 @@ const CreateProduct = () => {
       reader.readAsDataURL(file);
     });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const newForm = new FormData();
-  
-    // Append each image to FormData (use append, not set)
+
     images.forEach((image) => {
       newForm.append("images", image);
     });
-    
-    newForm.append("name", name);
-    newForm.append("description", description);
-    newForm.append("category", category);
-    newForm.append("tags", tags);
-    newForm.append("originalPrice", originalPrice);
-    newForm.append("discountPrice", discountPrice);
-    newForm.append("stock", stock);
-    newForm.append("shopId", seller._id);
-    
-    // Pass the FormData object to your action
-    dispatch(createProduct(newForm));
+    const data = {
+      name,
+      description,
+      category,
+      tags,
+      originalPrice,
+      discountPrice,
+      stock,
+      images,
+      shopId: seller._id,
+      start_Date: startDate?.toISOString(),
+      Finish_Date: endDate?.toISOString(),
+    };
+    dispatch(createevent(data));
   };
 
   return (
     <div className="w-[90%] 800px:w-[50%] bg-white  shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
-      <h5 className="text-[30px] font-Poppins text-center">Create Product</h5>
-      {/* create product form */}
+      <h5 className="text-[30px] font-Poppins text-center">Create Event</h5>
+      {/* create event form */}
       <form onSubmit={handleSubmit}>
         <br />
         <div>
@@ -87,7 +117,7 @@ const CreateProduct = () => {
             value={name}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your product name..."
+            placeholder="Enter your event product name..."
           />
         </div>
         <br />
@@ -104,7 +134,7 @@ const CreateProduct = () => {
             value={description}
             className="mt-2 appearance-none block w-full pt-2 px-3 border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter your product description..."
+            placeholder="Enter your event product description..."
           ></textarea>
         </div>
         <br />
@@ -135,7 +165,7 @@ const CreateProduct = () => {
             value={tags}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setTags(e.target.value)}
-            placeholder="Enter your product tags..."
+            placeholder="Enter your event product tags..."
           />
         </div>
         <br />
@@ -147,7 +177,7 @@ const CreateProduct = () => {
             value={originalPrice}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setOriginalPrice(e.target.value)}
-            placeholder="Enter your product price..."
+            placeholder="Enter your event product price..."
           />
         </div>
         <br />
@@ -161,7 +191,7 @@ const CreateProduct = () => {
             value={discountPrice}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setDiscountPrice(e.target.value)}
-            placeholder="Enter your product price with discount..."
+            placeholder="Enter your event product price with discount..."
           />
         </div>
         <br />
@@ -175,7 +205,39 @@ const CreateProduct = () => {
             value={stock}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setStock(e.target.value)}
-            placeholder="Enter your product stock..."
+            placeholder="Enter your event product stock..."
+          />
+        </div>
+        <br />
+        <div>
+          <label className="pb-2">
+            Event Start Date <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            name="price"
+            id="start-date"
+            value={startDate ? startDate.toISOString().slice(0, 10) : ""}
+            className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            onChange={handleStartDateChange}
+            min={today}
+            placeholder="Enter your event product stock..."
+          />
+        </div>
+        <br />
+        <div>
+          <label className="pb-2">
+            Event End Date <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            name="price"
+            id="end-date"
+            value={endDate ? endDate.toISOString().slice(0, 10) : ""}
+            className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            onChange={handleEndDateChange}
+            min={minEndDate}
+            placeholder="Enter your event product stock..."
           />
         </div>
         <br />
@@ -219,4 +281,4 @@ const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default CreateEvent;

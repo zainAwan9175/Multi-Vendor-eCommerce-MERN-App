@@ -1,22 +1,22 @@
 import React from "react";
 import DashboardHeader from "../../components/Shop/Layout/DashboardHeader";
+import CreateEvent from "../../components/Shop/CreateEvent.jsx";
 import DashboardSideBar from "../../components/Shop/Layout/DashboardSideBar";
-import AllProducts from "../../components/Shop/AllProducts.jsx";
 
-const ShopAllProducts = () => {
+const ShopCreateEvents = () => {
   return (
     <div>
       <DashboardHeader />
-      <div className="flex justify-between w-full">
+      <div className="flex items-center justify-between w-full">
         <div className="w-[330px]">
-          <DashboardSideBar active={3} />
+          <DashboardSideBar active={6} />
         </div>
         <div className="w-full justify-center flex">
-          <AllProducts />
+          <CreateEvent />
         </div>
       </div>
     </div>
   );
 };
 
-export default ShopAllProducts;
+export default ShopCreateEvents;

@@ -32,8 +32,10 @@ app.get('/', (req, res) => {
 const user = require("./controller/userController");
 const shop=require("./controller/shopController")
 const product=require("./controller/productController")
+const event=require("./controller/eventController")
 
 app.use("/user", user);
+app.use("/event", event);
 app.use("/shop", shop);
 app.use("/product", product);
   app.use(errorhandlermiddleware)
