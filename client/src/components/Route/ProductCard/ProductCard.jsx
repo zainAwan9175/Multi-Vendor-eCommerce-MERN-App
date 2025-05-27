@@ -9,55 +9,54 @@ import { Link } from "react-router-dom";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard";
-// import {
-//   addToWishlist,
-//   removeFromWishlist,
-// } from "../../../redux/actions/wishListAction";
+import { addToWishlist
+  ,removeFromWishlist
+ } from "../../../redux/actions/wishlist";
 import { useEffect } from "react";
-// import { addToCart } from "../../../redux/actions/cartAction";
+import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 
 const ProductCard = ({ data, isEvent }) => {
-//   const { wishlist } = useSelector((state) => state.wishlist);
-//   const { cart } = useSelector((state) => state.cart);
+     const { wishlist } = useSelector((state) => state.wishlist);
+  const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-//   useEffect(() => {
-//     if (wishlist && wishlist.find((i) => i._id === data._id)) {
-//       setClick(true);
-//     } else {
-//       setClick(false);
-//     }
-//   }, [wishlist, data._id]);
+  useEffect(() => {
+    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [wishlist, data._id]);
 
-//   const removeFromWishlistHandler = (data) => {
-//     setClick(!click);
-//     dispatch(removeFromWishlist(data));
-//   };
+  const removeFromWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(removeFromWishlist(data));
+  };
 
-//   const addToWishlistHandler = (data) => {
-//     setClick(!click);
-//     dispatch(addToWishlist(data));
-//   };
+  const addToWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(addToWishlist(data));
+  };
 
-//   const addToCartHandler = (id) => {
-//     const isItemExists = cart && cart.find((i) => i._id === id);
-//     if (isItemExists) {
-//       toast.error("Item already in cart!");
-//     } else {
-//       if (data.stock < 1) {
-//         toast.error("Product stock limited!");
-//       } else {
-//         const cartData = { ...data, qty: 1 };
-//         console.log(cartData);
-//         dispatch(addToCart(cartData));
-//         toast.success("Item added to cart successfully!");
-//       }
-//     }
-//   };
+  const addToCartHandler = (id) => {
+    const isItemExists = cart && cart.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Item already in cart!");
+    } else {
+      if (data.stock < 1) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: 1 };
+        console.log(cartData);
+        dispatch(addTocart(cartData));
+        toast.success("Item added to cart successfully!");
+      }
+    }
+  };
 
   return (
     <>
@@ -119,7 +118,7 @@ const ProductCard = ({ data, isEvent }) => {
             <AiFillHeart
               size={22}
               className="cursor-pointer absolute right-2 top-5"
-            //   onClick={() => removeFromWishlistHandler(data)}
+              onClick={() => removeFromWishlistHandler(data)}
               color={click ? "red" : "#333"}
               title="Remove from wishlist"
             />
@@ -127,7 +126,7 @@ const ProductCard = ({ data, isEvent }) => {
             <AiOutlineHeart
               size={22}
               className="cursor-pointer absolute right-2 top-5"
-            //   onClick={() => addToWishlistHandler(data)}
+              onClick={() => addToWishlistHandler(data)}
               color={click ? "red" : "#333"}
               title="Add to wishlist"
             />
@@ -142,7 +141,7 @@ const ProductCard = ({ data, isEvent }) => {
           <AiOutlineShoppingCart
             size={25}
             className="cursor-pointer absolute right-2 top-24"
-            // onClick={() => addToCartHandler(data._id)}
+            onClick={() => addToCartHandler(data._id)}
             color="#444"
             title="Add to cart"
           />

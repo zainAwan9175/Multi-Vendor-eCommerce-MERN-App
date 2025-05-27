@@ -7,97 +7,27 @@ import styles from "../../styles/styles";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-// import { addToCart, removeFromCart } from "../../redux/actions/cartAction";
+import { addToCart } from "../../redux/reducers/cart";
+import { removeFromCart } from "../../redux/reducers/cart";
 import { toast } from "react-toastify";
+import { removeFromcart } from "../../redux/actions/cart";
 
 const Cart = ({ setOpenCart }) => {
-//   const { cart } = useSelector((state) => state.cart);
-const cart = [
-    {
-        id: 1,
-        name: "Gaming Headphone Asus with mutiple color and free delivery",
-        description:
-          "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
-        image_Url: [
-          {
-            public_id: "test",
-            url: "https://www.startech.com.bd/image/cache/catalog/headphone/havit/h763d/h763d-02-500x500.jpg",
-          },
-          {
-            public_id: "test",
-            url: "https://eratablet.com/wp-content/uploads/2022/08/H51ba6537405f4948972e293927673546u.jpg",
-          },
-        ],
-        shop: {
-          name: "Asus Ltd",
-          shop_avatar: {
-            public_id: "test",
-            url: "https://www.hatchwise.com/wp-content/uploads/2022/05/amazon-logo-1024x683.png",
-          },
-          ratings: 4.2,
-        },
-        price: 300,
-        discount_price: 239,
-        rating: 4.5,
-        reviews: [
-          {
-            user: {
-              // user object will be here
-            },
-            comment: "IT's so cool!",
-            rating: 5,
-          },
-        ],
-        total_sell: 20,
-        stock: 10,
-        category: "Music and Gaming",
-        qty:6
-      },
-      {
-        id: 4,
-        name: "New Fashionable Watch for men 2023 with multiple colors",
-        description:
-          "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
-        image_Url: [
-          {
-            public_id: "test",
-            url: "https://i0.wp.com/eccocibd.com/wp-content/uploads/2022/01/1802NL02_1.png?fit=550%2C550&ssl=1",
-          },
-          {
-            public_id: "test",
-            url: "https://i0.wp.com/eccocibd.com/wp-content/uploads/2022/01/1802NL02_1.png?fit=550%2C550&ssl=1",
-          },
-        ],
-        shop: {
-          name: "Shahriar Watch House",
-          shop_avatar: {
-            public_id: "test",
-            url: "https://www.hatchwise.com/wp-content/uploads/2022/05/amazon-logo-1024x683.png",
-          },
-          ratings: 4.2,
-        },
-        price: 100,
-        discount_price: 79,
-        rating: 4,
-        total_sell: 62,
-        stock: 10,
-        qty:2
-      },
-    
-     
-    ];
+  const { cart } = useSelector((state) => state.cart);
+
   const dispatch = useDispatch();
 
   const removeFromCartHandler = (data) => {
-    // dispatch(removeFromCart(data));
-    console.log(data)
+
+     dispatch(removeFromcart(data));
+
   };
 
  
 
 
     const totalPrice = cart.reduce(
-      (acc, item) => acc + item.qty * item.discount_price,
+      (acc, item) => acc + item.qty * item.discountPrice,
       0
     );
 
@@ -105,8 +35,8 @@ const cart = [
   
 
   const quantityChangeHandler = (data) => {
-    // dispatch(addToCart(data));
-    console.log(data)
+     dispatch(addToCart(data));
+
   };
   
   return (
@@ -178,7 +108,7 @@ const cart = [
 
 const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   const [value, setValue] = useState(data.qty);
-  const totalPricePerQuantity = data.discount_price * value;
+  const totalPricePerQuantity = data.discountPrice * value;
 
   const increment = (data) => {
     if (data.stock < value) {
@@ -186,9 +116,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
     } else {
       setValue(value + 1);
   
-    //   settotalPrice((totalPrice) => {
-    //     return totalPrice + data.discount_price;
-    //   });
+     
       
       const updateCartData = { ...data, qty: value + 1 };
 
@@ -199,9 +127,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
 
   const decrement = (data) => {
     setValue(value === 1 ? 1 : value - 1);
-    // settotalPrice((totalPrice) => {
-    //     return totalPrice + data.discount_price;
-    //   });
+ 
     const updateCartData = { ...data, qty: value === 1 ? 1 : value - 1 };
     quantityChangeHandler(updateCartData);
   };
@@ -225,14 +151,14 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           </div>
         </div>
         <img
-          src={`${data?.image_Url[0]?.url}`}
+          src={`${data?.images[0]?.url}`}
           alt=""
           className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
         />
         <div className="pl-[5px]">
           <h1>{data.name}</h1>
           <h4 className="font-[400] text-[15px] text-[#00000082]">
-            ${data.discount_price} * {value}
+            ${data.discountPrice} * {value}
           </h4>
           <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
             US${totalPricePerQuantity }

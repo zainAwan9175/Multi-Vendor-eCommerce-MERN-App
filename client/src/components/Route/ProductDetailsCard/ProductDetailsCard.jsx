@@ -10,16 +10,12 @@ import { Link } from "react-router-dom";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-// import { addToCart } from "../../../redux/actions/cartAction";
-// import {
-//   addToWishlist,
-//   removeFromWishlist,
-// } from "../../../redux/actions/wishListAction";
-
+import { addToWishlist,removeFromWishlist } from "../../../redux/actions/wishlist";
+import { addToCart } from "../../../redux/reducers/cart";
 const ProductDetailsCard = ({ setOpen, data }) => {
-//   const { cart } = useSelector((state) => state.cart);
-//   const { wishlist } = useSelector((state) => state.wishlist);
-//   const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state.cart);
+   const { wishlist } = useSelector((state) => state.wishlist);
+   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   //   const [select, setSelect] = useState(false);
@@ -36,38 +32,38 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     setCount(count + 1);
   };
 
-//   const addToCartHandler = (id) => {
-//     const isItemExists = cart && cart.find((i) => i._id === id);
-//     if (isItemExists) {
-//       toast.error("Item already in cart!");
-//     } else {
-//       if (data.stock < count) {
-//         toast.error("Product stock limited!");
-//       } else {
-//         const cartData = { ...data, qty: count };
-//         dispatch(addToCart(cartData));
-//         toast.success("Item added to cart successfully!");
-//       }
-//     }
-//   };
+  const addToCartHandler = (id) => {
+    const isItemExists = cart && cart.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Item already in cart!");
+    } else {
+      if (data.stock < count) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: count };
+        dispatch(addToCart(cartData));
+        toast.success("Item added to cart successfully!");
+      }
+    }
+  };
 
-//   useEffect(() => {
-//     if (wishlist && wishlist.find((i) => i._id === data._id)) {
-//       setClick(true);
-//     } else {
-//       setClick(false);
-//     }
-//   }, [wishlist, data._id]);
+  useEffect(() => {
+    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [wishlist, data._id]);
 
-//   const removeFromWishlistHandler = (data) => {
-//     setClick(!click);
-//     dispatch(removeFromWishlist(data));
-//   };
+  const removeFromWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(removeFromWishlist(data));
+  };
 
-//   const addToWishlistHandler = (data) => {
-//     setClick(!click);
-//     dispatch(addToWishlist(data));
-//   };
+  const addToWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(addToWishlist(data));
+  };
 
   return (
     <div className="bg-[#fff]">
@@ -93,7 +89,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     <div>
                         <div >
                         <img
-            src={`${data.shop.shop_avatar && data.shop.shop_avatar.url}`}
+            src={`${data.shop.avatar && data.shop.avatar.url}`}
             alt=""
             className="w-[50px] h-[50px] rounded-full"
           />
@@ -126,10 +122,10 @@ const ProductDetailsCard = ({ setOpen, data }) => {
 
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discount_price}$
+                    {data.discountPrice}$
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.price ? data.price + "$" : null}
+                    {data.originalPrice ? data.originalPrice + "$" : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">
@@ -155,7 +151,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                       <AiFillHeart
                         size={30}
                         className="cursor-pointer"
-                        // onClick={() => removeFromWishlistHandler(data)}
+                         onClick={() => removeFromWishlistHandler(data)}
                         color={click ? "red" : "#333"}
                         title="Remove from wishlist"
                       />
@@ -163,7 +159,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                       <AiOutlineHeart
                         size={30}
                         className="cursor-pointer"
-                        // onClick={() => addToWishlistHandler(data)}
+                         onClick={() => addToWishlistHandler(data)}
                         title="Add to wishlist"
                       />
                     )}
@@ -171,7 +167,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 </div>
                 <div
                   className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
-                //   onClick={() => addToCartHandler(data._id)}
+                  onClick={() => addToCartHandler(data._id)}
                 >
                   <span className="text-[#fff] flex items-center">
                     Add to cart <AiOutlineShoppingCart className="ml-1" />

@@ -11,12 +11,16 @@ import { Link } from "react-router-dom"
 import { MdTrackChanges } from "react-icons/md"
 import { RxCross1 } from "react-icons/rx"
 
+
 import { loadUser } from "../../redux/actions/user"
 import { Country, State } from "country-state-city"
 import { useEffect } from "react"
+import { deleteUserAddress } from "../../redux/actions/user"
 import { toast } from "react-toastify"
 import axios from "axios"
+import { updateUserInformation } from "../../redux/actions/user"
 // import { getAllOrdersOfUser } from "../../redux/actions/orderAction";
+import { updatUserAddress } from "../../redux/actions/user"
 
 const ProfileContent = ({ active }) => {
   const { user, error } = useSelector((state) => state.user)
@@ -30,20 +34,20 @@ const ProfileContent = ({ active }) => {
   const [avatar, setAvatar] = useState(null)
   const dispatch = useDispatch()
 
-  //   useEffect(() => {
-  //     if (error) {
-  //       toast.error(error);
-  //       dispatch({ type: "clearErrors" });
-  //     }
-  //     if (successMessage) {
-  //       toast.success(successMessage);
-  //       dispatch({ type: "clearMessages" });
-  //     }
-  //   }, [error, successMessage]);
+    useEffect(() => {
+      if (error) {
+        toast.error(error);
+        dispatch({ type: "clearErrors" });
+      }
+      // if (successMessage) {
+      //   toast.success(successMessage);
+      //   dispatch({ type: "clearMessages" });
+      // }
+    }, [error,dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // dispatch(updateUserInformation(name, email, phoneNumber, password));
+     dispatch(updateUserInformation(name, email, phoneNumber, password));
   }
 
   const handleImage = async (e) => {
@@ -145,36 +149,8 @@ const ProfileContent = ({ active }) => {
                   />
                 </div>
 
-                <div className="w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2 font-medium text-gray-700">Address 2</label>
-                  <input
-                    type="text"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0 border-2 focus:border-[#3ad132] focus:outline-none rounded-md p-2`}
-                    required
-                    value={address1}
-                    onChange={(e) => setaddress1(e.target.value)}
-                  />
-                </div>
-                <div className="w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2 font-medium text-gray-700">Address 1</label>
-                  <input
-                    type="text"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0 border-2 focus:border-[#3ad132] focus:outline-none rounded-md p-2`}
-                    required
-                    value={address2}
-                    onChange={(e) => setaddress2(e.target.value)}
-                  />
-                </div>
-                <div className="w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2 font-medium text-gray-700">Zip Code</label>
-                  <input
-                    type="text"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0 border-2 focus:border-[#3ad132] focus:outline-none rounded-md p-2`}
-                    required
-                    value={password}
-                    onChange={(e) => setzipCode(e.target.value)}
-                  />
-                </div>
+           
+            
               </div>
               <input
                 className={`w-[250px] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer hover:bg-[#3a24db] hover:text-white transition-all font-medium`}
@@ -754,16 +730,16 @@ const Address = () => {
     if (addressType === "" || country === "" || city === "") {
       toast.error("Please fill all the fields!")
     } else {
-      // dispatch(
-      //   updatUserAddress(
-      //     country,
-      //     city,
-      //     address1,
-      //     address2,
-      //     zipCode,
-      //     addressType
-      //   )
-      // );
+      dispatch(
+        updatUserAddress(
+          country,
+          city,
+          address1,
+          address2,
+          zipCode,
+          addressType
+        )
+      );
       setOpen(false)
       setCountry("")
       setCity("")
@@ -776,7 +752,7 @@ const Address = () => {
 
   const handleDelete = (item) => {
     const id = item._id
-    // dispatch(deleteUserAddress(id));
+     dispatch(deleteUserAddress(id));
   }
 
   return (
@@ -826,7 +802,7 @@ const Address = () => {
                       className="w-[95%] border h-[40px] rounded-[5px] px-2 focus:border-[#3a24db] focus:outline-none"
                     >
                       <option value="" className="block border pb-2">
-                        choose your city
+                        choose your state
                       </option>
                       {State &&
                         State.getStatesOfCountry(country).map((item) => (
@@ -922,7 +898,7 @@ const Address = () => {
             </div>
             <div className="pl-8 flex items-center">
               <h6 className="text-[12px] 800px:text-[unset]">
-                {item.address1} {item.address2}
+                {item.address1} ,{item.address2},{item.city},{item.country}
               </h6>
             </div>
             <div className="pl-8 flex items-center">

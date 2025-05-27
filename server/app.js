@@ -31,9 +31,11 @@ app.get('/', (req, res) => {
 
 const user = require("./controller/userController");
 const shop=require("./controller/shopController")
+
+const coupon = require("./controller/couponController");
 const product=require("./controller/productController")
 const event=require("./controller/eventController")
-
+app.use("/coupon", coupon);
 app.use("/user", user);
 app.use("/event", event);
 app.use("/shop", shop);

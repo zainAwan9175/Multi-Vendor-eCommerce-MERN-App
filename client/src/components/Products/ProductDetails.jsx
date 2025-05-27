@@ -4,28 +4,32 @@ import { useState } from "react"
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from "react-icons/ai"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
-// import { getAllProductsShop } from "../../redux/actions/productAction";
+import { getAllProductsShop } from "../../redux/actions/product"
 import styles from "../../styles/styles"
+import { addToCart } from "../../redux/reducers/cart"
+import { toast } from "react-toastify"
 import Ratings from "./Ratings"
+import { addToWishlist,removeFromWishlist } from "../../redux/actions/wishlist"
+import { useEffect } from "react"
 
 const ProductDetails = ({ data }) => {
-  //   const { wishlist } = useSelector((state) => state.wishlist);
-  //   const { cart } = useSelector((state) => state.cart);
+    const { wishlist } = useSelector((state) => state.wishlist);
+     const { cart } = useSelector((state) => state.cart);
   const { user, isAuthenticated } = useSelector((state) => state.user)
-  //   const { products } = useSelector((state) => state.products);
+    const { products } = useSelector((state) => state.product);
   const [count, setCount] = useState(1)
   const [click, setClick] = useState(false)
   const [select, setSelect] = useState(0)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  //   useEffect(() => {
-  //     dispatch(getAllProductsShop(data && data?.shop._id));
-  //     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
-  //       setClick(true);
-  //     } else {
-  //       setClick(false);
-  //     }
-  //   }, [data, wishlist, dispatch]);
+    useEffect(() => {
+      dispatch(getAllProductsShop(data && data?.shopId));
+      if (wishlist && wishlist.find((i) => i._id === data?._id)) {
+        setClick(true);
+      } else {
+        setClick(false);
+      }
+    }, [data]);
 
   const incrementCount = () => {
     setCount(count + 1)
@@ -39,28 +43,28 @@ const ProductDetails = ({ data }) => {
 
   const removeFromWishlistHandler = (data) => {
     setClick(!click)
-    // dispatch(removeFromWishlist(data));
+     dispatch(removeFromWishlist(data));
   }
 
   const addToWishlistHandler = (data) => {
     setClick(!click)
-    // dispatch(addToWishlist(data));
+    dispatch(addToWishlist(data));
   }
 
-  //   const addToCartHandler = (id) => {
-  //     const isItemExists = cart && cart.find((i) => i._id === id);
-  //     if (isItemExists) {
-  //       toast.error("Item already in cart!");
-  //     } else {
-  //       if (data.stock < 1) {
-  //         toast.error("Product stock limited!");
-  //       } else {
-  //         const cartData = { ...data, qty: count };
-  //         // dispatch(addToCart(cartData));
-  //         toast.success("Item added to cart successfully!");
-  //       }
-  //     }
-  //   };
+    const addToCartHandler = (id) => {
+      const isItemExists = cart && cart.find((i) => i._id === id);
+      if (isItemExists) {
+        toast.error("Item already in cart!");
+      } else {
+        if (data.stock < count) {
+          toast.error("Product stock limited!");
+        } else {
+          const cartData = { ...data, qty: count };
+           dispatch(addToCart(cartData));
+          toast.success("Item added to cart successfully!");
+        }
+      }
+    };
 
   //   const totalReviewsLength =
   //     products &&
@@ -109,14 +113,14 @@ const ProductDetails = ({ data }) => {
               <div className="w-full 800px:w-[50%]">
                 <div className="flex justify-center items-center bg-gray-50 rounded-lg p-4 mb-4 h-[400px] overflow-hidden">
                   <img
-                    src={`${data && data.image_Url[select]?.url}`}
+                    src={`${data && data.images[select]?.url}`}
                     alt=""
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
                 <div className="w-full flex flex-wrap gap-2 justify-start">
                   {data &&
-                    data.image_Url.map((i, index) => (
+                    data.images.map((i, index) => (
                       <div
                         key={index}
                         className={`${
@@ -136,10 +140,10 @@ const ProductDetails = ({ data }) => {
                 </div>
                 <div className="flex items-center gap-4 mb-6">
                   <h4 className={`${styles.productDiscountPrice} text-2xl font-bold text-teal-600`}>
-                    ${data.discount_price}
+                    ${data.discountPrice}
                   </h4>
                   {data.price && (
-                    <h3 className={`${styles.price} text-lg line-through text-gray-500`}>${data.price}</h3>
+                    <h3 className={`${styles.originalPrice} text-lg line-through text-gray-500`}>${data.price}</h3>
                   )}
                 </div>
 
@@ -183,7 +187,7 @@ const ProductDetails = ({ data }) => {
                 </div>
                 <div
                   className={`${styles.button} !mt-6 !rounded-lg !h-12 flex items-center justify-center hover:opacity-90 transition-opacity`}
-                  //   onClick={() => addToCartHandler(data._id)}
+                    onClick={() => addToCartHandler(data._id)}
                 >
                   <span className="text-white flex items-center text-lg">
                     Add to cart <AiOutlineShoppingCart className="ml-2" size={22} />
@@ -192,7 +196,7 @@ const ProductDetails = ({ data }) => {
                 <div className="flex items-center pt-8 border-t mt-8 border-gray-200">
                   <Link to={`/shop/preview/${data?.shop._id}`}>
                     <img
-                      src={`${data?.shop?.shop_avatar?.url}`}
+                      src={`${data?.shop?.avatar?.url}`}
                       alt=""
                       className="w-[60px] h-[60px] rounded-full mr-4 border-2 border-teal-500 p-1"
                     />
@@ -221,7 +225,7 @@ const ProductDetails = ({ data }) => {
           </div>
           <ProductDetailsInfo
             data={data}
-            // products={products}
+             products={products}
             // totalReviewsLength={totalReviewsLength}
             // averageRating={averageRating}
           />
@@ -300,7 +304,7 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating 
           <div className="w-full 800px:w-[50%]">
             <Link to={`/shop/preview/${data.shop._id}`}>
               <div className="flex items-center">
-                <img src={`${data?.shop?.shop_avatar?.url}`} className="w-[50px] h-[50px] rounded-full" alt="" />
+                <img src={`${data?.shop?.avatar?.url}`} className="w-[50px] h-[50px] rounded-full" alt="" />
                 <div className="pl-3">
                   <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
                   <h5 className="pb-2 text-[15px]">({averageRating}/5) Ratings</h5>
