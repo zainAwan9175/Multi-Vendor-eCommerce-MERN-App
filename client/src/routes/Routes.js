@@ -12,6 +12,12 @@ import ShopCreatePage from "../pages/ShopCreatePage";
 import ShopLogin from "../components/Shop/ShopLogin";
 import ShopActivationPage from "../pages/ShopActivationPage"
 import CheckoutPage from "../pages/CheckoutPage";
+import UserInboxPage from "../pages/UserInboxPage";
+import PaymentPage from "../pages/PaymentPage";
+import OrderDetailsPage from "../pages/OrderDetailsPage";
+import TrackOrder from "../components/Profile/TrackOrder";
+import AdminDashboardPage from "../pages/AdminDashboardPage";
+import AdminDashboardWithdrawPage from "../pages/AdminDashboardWithdrawPage";
 export{
     Login,
     ActivationPage,
@@ -26,5 +32,11 @@ ProductDetailsPage,
     ShopCreatePage,
     ShopLogin,
     ShopActivationPage,
-    CheckoutPage
+    CheckoutPage,
+    PaymentPage,
+    OrderDetailsPage,
+    TrackOrder,
+    UserInboxPage,
+    AdminDashboardPage,
+    AdminDashboardWithdrawPage
 }

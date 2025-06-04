@@ -21,6 +21,7 @@ import axios from "axios"
 import { updateUserInformation } from "../../redux/actions/user"
 // import { getAllOrdersOfUser } from "../../redux/actions/orderAction";
 import { updatUserAddress } from "../../redux/actions/user"
+    import { loadOrder } from "../../redux/actions/order"
 
 const ProfileContent = ({ active }) => {
   const { user, error } = useSelector((state) => state.user)
@@ -33,17 +34,25 @@ const ProfileContent = ({ active }) => {
   const [password, setPassword] = useState("")
   const [avatar, setAvatar] = useState(null)
   const dispatch = useDispatch()
+  
 
     useEffect(() => {
       if (error) {
         toast.error(error);
         dispatch({ type: "clearErrors" });
+ 
       }
       // if (successMessage) {
       //   toast.success(successMessage);
       //   dispatch({ type: "clearMessages" });
       // }
     }, [error,dispatch]);
+
+ useEffect(() => {
+  if (user?._id) {
+    dispatch(loadOrder(user._id));
+  }
+}, [user, dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -213,36 +222,37 @@ const ProfileContent = ({ active }) => {
 
 const AllOrders = () => {
   const { user } = useSelector((state) => state.user)
-  //   const { orders } = useSelector((state) => state.order);
+    const { orders } = useSelector((state) => state.order);
+
   const dispatch = useDispatch()
-  const orders = [
-    {
-      _id: "7463wbfbhfbrtr28820221",
-      orderItems: [{ name: "iPhone 14 Pro Max" }],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "8463gcfgjdfkjg33443322",
-      orderItems: [{ name: "Samsung Galaxy S23 Ultra" }],
-      totalPrice: 140,
-      orderStatus: "Shipped",
-    },
-    {
-      _id: "9463hfhjdfjdf99384412",
-      orderItems: [{ name: "MacBook Pro 16-inch" }],
-      totalPrice: 2500,
-      orderItems: [{ name: "Sony WH-1000XM5 Headphones" }],
-      totalPrice: 350,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "11463sdfsdffjfj9848334",
-      orderItems: [{ name: "Apple Watch Series 9" }],
-      totalPrice: 400,
-      orderStatus: "Cancelled",
-    },
-  ]
+  // const orders = [
+  //   {
+  //     _id: "7463wbfbhfbrtr28820221",
+  //     orderItems: [{ name: "iPhone 14 Pro Max" }],
+  //     totalPrice: 120,
+  //     orderStatus: "Processing",
+  //   },
+  //   {
+  //     _id: "8463gcfgjdfkjg33443322",
+  //     orderItems: [{ name: "Samsung Galaxy S23 Ultra" }],
+  //     totalPrice: 140,
+  //     orderStatus: "Shipped",
+  //   },
+  //   {
+  //     _id: "9463hfhjdfjdf99384412",
+  //     orderItems: [{ name: "MacBook Pro 16-inch" }],
+  //     totalPrice: 2500,
+  //     orderItems: [{ name: "Sony WH-1000XM5 Headphones" }],
+  //     totalPrice: 350,
+  //     orderStatus: "Processing",
+  //   },
+  //   {
+  //     _id: "11463sdfsdffjfj9848334",
+  //     orderItems: [{ name: "Apple Watch Series 9" }],
+  //     totalPrice: 400,
+  //     orderStatus: "Cancelled",
+  //   },
+  // ]
 
   useEffect(() => {
     // dispatch(getAllOrdersOfUser(user._id));
@@ -301,9 +311,9 @@ const AllOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus,
+        status: item.status,
       })
     })
 
@@ -473,40 +483,40 @@ const AllRefundOrders = () => {
 
 const TrackOrder = () => {
   const { user } = useSelector((state) => state.user)
-  // const { orders } = useSelector((state) => state.order);
-  const orders = [
-    {
-      _id: "7463wbfbhfbrtr28820221",
-      orderItems: [{ name: "iPhone 14 Pro Max" }],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "8463gcfgjdfkjg33443322",
-      orderItems: [{ name: "Samsung Galaxy S23 Ultra" }],
-      totalPrice: 140,
-      orderStatus: "Shipped",
-    },
-    {
-      _id: "9463hfhjdfjdf99384412",
-      orderItems: [{ name: "MacBook Pro 16-inch" }],
-      totalPrice: 2500,
-      orderItems: [{ name: "Sony WH-1000XM5 Headphones" }],
-      totalPrice: 350,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "11463sdfsdffjfj9848334",
-      orderItems: [{ name: "Apple Watch Series 9" }],
-      totalPrice: 400,
-      orderStatus: "Cancelled",
-    },
-  ]
+ const { orders } = useSelector((state) => state.order);
+  // const orders = [
+  //   {
+  //     _id: "7463wbfbhfbrtr28820221",
+  //     orderItems: [{ name: "iPhone 14 Pro Max" }],
+  //     totalPrice: 120,
+  //     orderStatus: "Processing",
+  //   },
+  //   {
+  //     _id: "8463gcfgjdfkjg33443322",
+  //     orderItems: [{ name: "Samsung Galaxy S23 Ultra" }],
+  //     totalPrice: 140,
+  //     orderStatus: "Shipped",
+  //   },
+  //   {
+  //     _id: "9463hfhjdfjdf99384412",
+  //     orderItems: [{ name: "MacBook Pro 16-inch" }],
+  //     totalPrice: 2500,
+  //     orderItems: [{ name: "Sony WH-1000XM5 Headphones" }],
+  //     totalPrice: 350,
+  //     orderStatus: "Processing",
+  //   },
+  //   {
+  //     _id: "11463sdfsdffjfj9848334",
+  //     orderItems: [{ name: "Apple Watch Series 9" }],
+  //     totalPrice: 400,
+  //     orderStatus: "Cancelled",
+  //   },
+  // ]
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // dispatch(getAllOrdersOfUser(user._id));
+     dispatch(loadOrder(user._id));
   }, [])
 
   const columns = [
@@ -562,10 +572,10 @@ const TrackOrder = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
 
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus,
+        status: item.status,
       })
     })
 

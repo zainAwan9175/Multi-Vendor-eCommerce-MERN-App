@@ -11,6 +11,7 @@ import { addToCart } from "../../redux/reducers/cart";
 import { removeFromCart } from "../../redux/reducers/cart";
 import { toast } from "react-toastify";
 import { removeFromcart } from "../../redux/actions/cart";
+import { addTocart } from "../../redux/actions/cart";
 
 const Cart = ({ setOpenCart }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -35,7 +36,8 @@ const Cart = ({ setOpenCart }) => {
   
 
   const quantityChangeHandler = (data) => {
-     dispatch(addToCart(data));
+    console.log(data)
+     dispatch(addTocart(data));
 
   };
   

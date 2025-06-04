@@ -14,6 +14,7 @@ const ShopHomePage = () => {
         </div>
         <div className="w-[72%] rounded-[4px]">
           <ShopProfileData isOwner={true} />
+          
         </div>
       </div>
     </div>

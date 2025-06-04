@@ -73,7 +73,7 @@ const Checkout = () => {
         const isCouponValid =
           cart && cart.filter((item) => item.shopId === shopId);
 
-        if (isCouponValid.length === 0) {
+        if (isCouponValid.length === 0) {          
           toast.error("Coupon code is not valid for this shop");
           setCouponCode("");
         } else {
@@ -304,8 +304,8 @@ const ShippingInfo = ({
 };
 
 const CartData = ({
-  handleSubmit,
-  totalPrice,
+  handleSubmit,  
+  totalPrice, 
   shipping,
   subTotalPrice,
   couponCode,

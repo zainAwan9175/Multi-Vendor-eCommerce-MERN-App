@@ -35,10 +35,21 @@ const shop=require("./controller/shopController")
 const coupon = require("./controller/couponController");
 const product=require("./controller/productController")
 const event=require("./controller/eventController")
+const conversation=require("./controller/conversationController")
+const payment=require("./controller/paymentController")
+const order=require("./controller/orderController")
+const message=require("./controller/messagesController")
+const withdraw=require("./controller/withdrawController")
 app.use("/coupon", coupon);
 app.use("/user", user);
 app.use("/event", event);
 app.use("/shop", shop);
 app.use("/product", product);
+app.use("/payment", payment);
+app.use("/order", order);
+app.use("/conversation", conversation);
+app.use("/message", message);
+app.use("/withdraw", withdraw);
+
   app.use(errorhandlermiddleware)
 module.exports = app; // Ensure the app is exported correctly

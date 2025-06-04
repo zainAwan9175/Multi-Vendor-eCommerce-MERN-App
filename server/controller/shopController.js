@@ -193,71 +193,71 @@ router.get(
   })
 );
 
-// update shop profile picture
-// router.put(
-//   "/update-shop-avatar",
-//   isSeller,
-//   catchAsyncError(async (req, res, next) => {
-//     try {
-//       let existsSeller = await Shop.findById(req.seller._id);
+//update shop profile picture
+router.put(
+  "/update-shop-avatar",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      let existsSeller = await Shop.findById(req.seller._id);
 
-//       const imageId = existsSeller.avatar.public_id;
+      const imageId = existsSeller.avatar.public_id;
 
-//       await cloudinary.v2.uploader.destroy(imageId);
+      await cloudinary.v2.uploader.destroy(imageId);
 
-//       const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-//         folder: "avatars-MV",
-//         width: 150,
-//       });
+      const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+        folder: "avatar",
+        width: 150,
+      });
 
-//       existsSeller.avatar = {
-//         public_id: myCloud.public_id,
-//         url: myCloud.secure_url,
-//       };
+      existsSeller.avatar = {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      };
 
-//       await existsSeller.save();
+      await existsSeller.save();
 
-//       res.status(200).json({
-//         success: true,
-//         seller: existsSeller,
-//       });
-//     } catch (error) {
-//       return next(new ErrorHandler(error.message, 500));
-//     }
-//   })
-// );
+      res.status(200).json({
+        success: true,
+        seller: existsSeller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
-// update seller info
-// router.put(
-//   "/update-seller-info",
-//   isSeller,
-//   catchAsyncError(async (req, res, next) => {
-//     try {
-//       const { name, description, address, phoneNumber, zipCode } = req.body;
+//update seller info
+router.put(
+  "/update-seller-info",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const { name, description, address, phoneNumber, zipCode } = req.body;
 
-//       const shop = await Shop.findOne(req.seller._id);
+      const shop = await Shop.findOne(req.seller._id);
 
-//       if (!shop) {
-//         return next(new ErrorHandler("User not found", 400));
-//       }
+      if (!shop) {
+        return next(new ErrorHandler("User not found", 400));
+      }
 
-//       shop.name = name;
-//       shop.description = description;
-//       shop.address = address;
-//       shop.phoneNumber = phoneNumber;
-//       shop.zipCode = zipCode;
+      shop.name = name;
+      shop.description = description;
+      shop.address = address;
+      shop.phoneNumber = phoneNumber;
+      shop.zipCode = zipCode;
 
-//       await shop.save();
+      await shop.save();
 
-//       res.status(201).json({
-//         success: true,
-//         shop,
-//       });
-//     } catch (error) {
-//       return next(new ErrorHandler(error.message, 500));
-//     }
-//   })
-// );
+      res.status(201).json({
+        success: true,
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
 // all sellers --- for admin
 // router.get(
@@ -306,52 +306,71 @@ router.get(
 //   })
 // );
 
-// update seller withdraw methods --- sellers
-// router.put(
-//   "/update-payment-methods",
-//   isSeller,
-//   catchAsyncError(async (req, res, next) => {
-//     try {
-//       const { withdrawMethod } = req.body;
+//update seller withdraw methods --- sellers
+router.put(
+  "/update-payment-methods",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const { withdrawMethod } = req.body;
 
-//       const seller = await Shop.findByIdAndUpdate(req.seller._id, {
-//         withdrawMethod,
-//       });
+      const seller = await Shop.findByIdAndUpdate(req.seller._id, {
+        withdrawMethod,
+      });
 
-//       res.status(201).json({
-//         success: true,
-//         seller,
-//       });
-//     } catch (error) {
-//       return next(new ErrorHandler(error.message, 500));
-//     }
-//   })
-// );
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+router.get(
+  "/get-shop-info/:id",
+  catchAsyncError(async (req, res, next) => {
+    try {
+      //this will return an object
+      const shop = await Shop.findById(req.params.id);
+      if (!shop) {
+        return next(new ErrorHandler("Seller does'nt exist!", 400));
+      }
+      res.status(200).json({
+        success: true,
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
 // delete seller withdraw methods --- only seller
-// router.delete(
-//   "/delete-withdraw-method/",
-//   isSeller,
-//   catchAsyncError(async (req, res, next) => {
-//     try {
-//       const seller = await Shop.findById(req.seller._id);
+router.delete(
+  "/delete-withdraw-method/",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.seller._id);
 
-//       if (!seller) {
-//         return next(new ErrorHandler("Seller not found with this id", 400));
-//       }
+      if (!seller) {
+        return next(new ErrorHandler("Seller not found with this id", 400));
+      }
 
-//       seller.withdrawMethod = null;
+      seller.withdrawMethod = null;
 
-//       await seller.save();
+      await seller.save();
 
-//       res.status(201).json({
-//         success: true,
-//         seller,
-//       });
-//     } catch (error) {
-//       return next(new ErrorHandler(error.message, 500));
-//     }
-//   })
-// );
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
 module.exports = router;

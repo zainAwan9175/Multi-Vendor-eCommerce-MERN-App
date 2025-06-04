@@ -130,4 +130,67 @@ router.get(
     }
   })
 );
+
+
+router.put(
+  "/create-new-review",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { user, rating, comment, productId } = req.body;
+
+      if (!user || !user._id || !rating || !productId) {
+        return res.status(400).json({
+          success: false,
+          message: "Missing required fields",
+        });
+      }
+
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found",
+        });
+      }
+
+      // Check if user already reviewed
+      const existingReview = product.reviews.find(
+        (rev) => rev.user._id.toString() === user._id.toString()
+      );
+
+      if (existingReview) {
+        // Update existing review
+        existingReview.rating = rating;
+        existingReview.comment = comment;
+      } else {
+        // Add new review
+        product.reviews.push({
+          user,
+          rating,
+          comment,
+          createdAt: new Date(),
+        });
+      }
+
+      // Recalculate average rating
+      let totalRating = 0;
+      product.reviews.forEach((rev) => {
+        totalRating += rev.rating;
+      });
+
+      product.ratings = totalRating / product.reviews.length;
+
+      await product.save({ validateBeforeSave: false });
+
+      res.status(201).json({
+        success: true,
+        message: "Reviewed successfully",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
+
 module.exports = router;

@@ -11,7 +11,7 @@ import { toast } from "react-toastify"
 import Ratings from "./Ratings"
 import { addToWishlist,removeFromWishlist } from "../../redux/actions/wishlist"
 import { useEffect } from "react"
-
+import axios from "axios"
 const ProductDetails = ({ data }) => {
     const { wishlist } = useSelector((state) => state.wishlist);
      const { cart } = useSelector((state) => state.cart);
@@ -66,43 +66,43 @@ const ProductDetails = ({ data }) => {
       }
     };
 
-  //   const totalReviewsLength =
-  //     products &&
-  //     products.reduce((acc, product) => acc + product.reviews.length, 0);
+    const totalReviewsLength =
+      products &&
+      products.reduce((acc, product) => acc + product.reviews.length, 0);
 
-  //   const totalRatings =
-  //     products &&
-  //     products.reduce(
-  //       (acc, product) =>
-  //         acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
-  //       0
-  //     );
+    const totalRatings =
+      products &&
+      products.reduce(
+        (acc, product) =>
+          acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
+        0
+      );
 
-  //   const avg = totalRatings / totalReviewsLength || 0;
+    const avg = totalRatings / totalReviewsLength || 0;
 
-  //   const averageRating = avg.toFixed(2);
+    const averageRating = avg.toFixed(2);
 
-  // const handleMessageSubmit = async () => {
-  //   if (isAuthenticated) {
-  //     const groupTitle = data._id + user._id;
-  //     const userId = user._id;
-  //     const sellerId = data.shop._id;
-  //     await axios
-  //       .post(`${server}/conversation/create-new-conversation`, {
-  //         groupTitle,
-  //         userId,
-  //         sellerId,
-  //       })
-  //       .then((res) => {
-  //         navigate(`/inbox?${res.data.conversation._id}`);
-  //       })
-  //       .catch((error) => {
-  //         toast.error(error.response.data.message);
-  //       });
-  //   } else {
-  //     toast.error("Please login to create a conversation");
-  //   }
-  // };
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(`${process.env.REACT_APP_BACKEND_URL}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
+  };
 
   return (
     <div className="bg-white">
@@ -207,13 +207,13 @@ const ProductDetails = ({ data }) => {
                         {data.shop.name}
                       </h3>
                     </Link>
-                    {/* <h5 className="pb-3 text-[15px]">
+                    <h5 className="pb-3 text-[15px]">
                       ({averageRating}/5) Ratings
-                    </h5> */}
+                    </h5>
                   </div>
                   <div
                     className={`${styles.button} bg-[#6443d1] hover:bg-[#5636b8] transition-colors !rounded-lg !h-12 ml-auto`}
-                    // onClick={handleMessageSubmit}
+                    onClick={handleMessageSubmit}
                   >
                     <span className="text-white flex items-center">
                       Send Message <AiOutlineMessage className="ml-2" />
@@ -226,8 +226,8 @@ const ProductDetails = ({ data }) => {
           <ProductDetailsInfo
             data={data}
              products={products}
-            // totalReviewsLength={totalReviewsLength}
-            // averageRating={averageRating}
+             totalReviewsLength={totalReviewsLength}
+            averageRating={averageRating}
           />
           <br />
           <br />
@@ -274,6 +274,7 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating 
       {active === 1 ? (
         <>
           <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line">{data.description}</p>
+          <Ratings rating={data?.ratings} />
         </>
       ) : null}
 
@@ -286,7 +287,7 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating 
                 <div className="pl-2 ">
                   <div className="w-full flex items-center">
                     <h1 className="font-[500] mr-3">{item.user.name}</h1>
-                    <Ratings rating={data?.ratings} />
+                    <Ratings rating={item?.rating} />
                   </div>
                   <p>{item.comment}</p>
                 </div>

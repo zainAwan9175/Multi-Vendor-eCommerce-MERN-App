@@ -5,7 +5,7 @@ import styles from "../../styles/styles";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromWishlist } from "../../redux/actions/wishlist";
-import { addToCart } from "../../redux/reducers/cart";
+import { addTocart } from "../../redux/actions/cart";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -92,7 +92,7 @@ const Wishlist = ({ setOpenWishlist }) => {
 
   const addToCartHandler = (data) => {
     const newData = { ...data, qty: 1 };
-     dispatch(addToCart(newData));
+     dispatch(addTocart(newData));
     console.log(data)
     setOpenWishlist(false);
   };

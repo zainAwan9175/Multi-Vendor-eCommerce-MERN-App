@@ -1,6 +1,6 @@
 import DashboardHeader from "../../components/Shop/Layout/DashboardHeader.jsx"
 import DashboardSideBar from "../../components/Shop/Layout/DashboardSideBar.jsx"
-// import DashboardHero from "../../components/Shop/DashboardHero.jsx";
+ import DashboardHero from "../../components/Shop/DashboardHero.jsx";
 
 import { getAllEventsShop } from "../../redux/actions/event.js";
 import { getAllProductsShop } from "../../redux/actions/product.js";
@@ -29,7 +29,7 @@ useEffect(() => {
         <div className="w-[330px] ">
           <DashboardSideBar active={1} />
         </div>
-        {/* <DashboardHero /> */}
+        <DashboardHero />
       </div>
     </div>
   )
