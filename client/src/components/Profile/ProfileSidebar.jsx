@@ -15,7 +15,7 @@ const ProfileSidebar = ({ setActive, active }) => {
   const { user } = useSelector((state) => state.user)
   const logoutHandler = () => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/user/logout`, { withCredentials: true })
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/logout`, { withCredentials: true })
       .then((res) => {
         toast.success(res.data.message)
         // window.location.reload(true);

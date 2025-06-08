@@ -37,7 +37,7 @@ const SignUp = () => {
     myForm.append("password", password);
     myForm.append("file", avatar);
 
-    const uri = `${process.env.REACT_APP_BACKEND_URL}/user/create-user`;
+    const uri = `${process.env.REACT_APP_BACKEND_URL}/api/user/create-user`;
 
     try {
       const response = await axios.post(uri, myForm, {

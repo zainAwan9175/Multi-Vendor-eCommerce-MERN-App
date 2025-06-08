@@ -88,7 +88,7 @@ const ProductDetails = ({ data }) => {
       const userId = user._id;
       const sellerId = data.shop._id;
       await axios
-        .post(`${process.env.REACT_APP_BACKEND_URL}/conversation/create-new-conversation`, {
+        .post(`${process.env.REACT_APP_BACKEND_URL}/api/conversation/create-new-conversation`, {
           groupTitle,
           userId,
           sellerId,

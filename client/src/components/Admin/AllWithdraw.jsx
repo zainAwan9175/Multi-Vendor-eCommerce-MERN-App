@@ -14,7 +14,7 @@ const AllWithdraw = () => {
   const [withdrawStatus, setWithdrawStatus] = useState("Processing");
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/withdraw/get-all-withdraw-request`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/withdraw/get-all-withdraw-request`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -27,7 +27,7 @@ const AllWithdraw = () => {
   const handleSubmit = async () => {
     axios
       .put(
-        `${process.env.REACT_APP_BACKEND_URL}/withdraw/update-withdraw-request/${withdrawData.id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/withdraw/update-withdraw-request/${withdrawData.id}`,
         {
           sellerId: withdrawData.shopId,
         },

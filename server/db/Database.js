@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 const connectDatabase = () => {
-  mongoose.connect("mongodb://localhost:27017/Multivender")
+  mongoose.connect("mongodb+srv://root:root@lms.j2ehk.mongodb.net/?retryWrites=true&w=majority&appName=LMS")
     .then(() => {
       console.log('MongoDB connected successfully');
     })

@@ -28,7 +28,7 @@ const ShopSettings = () => {
         setAvatar(reader.result);
         axios
           .put(
-            `${process.env.REACT_APP_BACKEND_URL}/shop/update-shop-avatar`,
+            `${process.env.REACT_APP_BACKEND_URL}/api/shop/update-shop-avatar`,
             { avatar: reader.result },
             {
               withCredentials: true,
@@ -52,7 +52,7 @@ const ShopSettings = () => {
 
     await axios
       .put(
-        `${process.env.REACT_APP_BACKEND_URL}/shop/update-seller-info`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/shop/update-seller-info`,
         {
           name,
           address,

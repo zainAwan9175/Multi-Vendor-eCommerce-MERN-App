@@ -21,7 +21,7 @@ const ShopCreate = () => {
     e.preventDefault();
 
     axios
-      .post(`${process.env.REACT_APP_BACKEND_URL}/shop/create-shop`, {
+      .post(`${process.env.REACT_APP_BACKEND_URL}/api/shop/create-shop`, {
         name,
         email,
         password,

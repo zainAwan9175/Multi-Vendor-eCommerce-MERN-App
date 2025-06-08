@@ -30,7 +30,7 @@ const UserOrderDetails = () => {
   const reviewHandler = async (e) => {
     await axios
       .put(
-        `${process.env.REACT_APP_BACKEND_URL}/product/create-new-review`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/product/create-new-review`,
         {
           user,
           rating,
@@ -54,7 +54,7 @@ const UserOrderDetails = () => {
 
   const refundHandler = async () => {
     await axios
-      .put(`${process.env.REACT_APP_BACKEND_URL}/order/order-refund/${id}`, {
+      .put(`${process.env.REACT_APP_BACKEND_URL}/api/order/order-refund/${id}`, {
         status: "Processing refund",
       })
       .then((res) => {

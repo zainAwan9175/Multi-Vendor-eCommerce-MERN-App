@@ -8,7 +8,7 @@ export const createevent = (d) => async (dispatch) => {
       type: "eventCreateRequest",
     });
 
-    const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/event/create-event`, d);
+    const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/event/create-event`, d);
     dispatch({
       type: "eventCreateSuccess",
       payload: data.event,
@@ -28,7 +28,7 @@ export const getAllEventsShop = (id) => async (dispatch) => {
       type: "getAlleventsShopRequest",
     });
 
-    const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/event/get-all-events/${id}`);
+    const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/event/get-all-events/${id}`);
     dispatch({
       type: "getAlleventsShopSuccess",
       payload: data.events,
@@ -49,7 +49,7 @@ export const deleteEvent = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.delete(
-      `${process.env.REACT_APP_BACKEND_URL}/event/delete-shop-event/${id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/api/event/delete-shop-event/${id}`,
       {
         withCredentials: true,
       }
@@ -74,7 +74,7 @@ export const getAllEvents = () => async (dispatch) => {
       type: "getAlleventsRequest",
     });
 
-    const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/event/get-all-events`);
+    const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/event/get-all-events`);
     dispatch({
       type: "getAlleventsSuccess",
       payload: data.events,

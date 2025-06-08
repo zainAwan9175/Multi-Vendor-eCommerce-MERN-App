@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
     io.emit("getUsers", users)
   })
 })
-lo
-server.listen(process.env.PORT || 4000, () => {
-  console.log(`Server is running on the PORT:${process.env.PORT || 4000}`)
+
+server.listen(8000, () => {
+  console.log('Socket server running on port 8000')
 })
