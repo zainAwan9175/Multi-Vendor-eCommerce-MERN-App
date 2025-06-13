@@ -65,43 +65,35 @@ jobs:
           echo "${{ secrets.EC2_KEY }}" > ec2_key.pem
           chmod 600 ec2_key.pem
 
-      - name: Deploy containers on EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            # Install unzip and curl if missing (required for AWS CLI install)
-            sudo apt-get update
-            sudo apt-get install -y unzip curl
+   - name: Deploy containers on EC2
+  run: |
+    ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+      sudo apt-get update
+      sudo apt-get install -y unzip curl
 
-            # Install AWS CLI if not installed
-            if ! command -v aws &> /dev/null; then
-              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-              unzip awscliv2.zip
-              sudo ./aws/install
-            fi
+      if ! command -v aws &> /dev/null; then
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+      fi
 
-            # Verify AWS CLI installed
-            aws --version
+      aws --version
 
-            # Login to ECR
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+      aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-            # Create .env files on EC2
-            echo '${{ secrets.CLIENT_ENV }}' > ~/client.env
-            echo '${{ secrets.SERVER_ENV }}' > ~/server.env
-            echo '${{ secrets.SOCKET_ENV }}' > ~/socket.env
+      echo '${{ secrets.CLIENT_ENV }}' > ~/client.env
+      echo '${{ secrets.SERVER_ENV }}' > ~/server.env
+      echo '${{ secrets.SOCKET_ENV }}' > ~/socket.env
 
-            # Pull latest Docker images
-            docker pull $CLIENT_IMAGE:latest
-            docker pull $SERVER_IMAGE:latest
-            docker pull $SOCKET_IMAGE:latest
+      docker pull ${{ env.CLIENT_IMAGE }}:latest
+      docker pull ${{ env.SERVER_IMAGE }}:latest
+      docker pull ${{ env.SOCKET_IMAGE }}:latest
 
-            # Stop and remove old containers
-            docker stop client || true && docker rm client || true
-            docker stop server || true && docker rm server || true
-            docker stop socket || true && docker rm socket || true
+      docker stop client || true && docker rm client || true
+      docker stop server || true && docker rm server || true
+      docker stop socket || true && docker rm socket || true
 
-            # Run containers with env files and restart policy
-            docker run -d --restart always --name client -p 3000:3000 --env-file ~/client.env $CLIENT_IMAGE:latest
-            docker run -d --restart always --name server -p 5000:5000 --env-file ~/server.env $SERVER_IMAGE:latest
-            docker run -d --restart always --name socket -p 8000:8000 --env-file ~/socket.env $SOCKET_IMAGE:latest
-          EOF
+      docker run -d --restart always --name client -p 3000:3000 --env-file ~/client.env ${{ env.CLIENT_IMAGE }}:latest
+      docker run -d --restart always --name server -p 5000:5000 --env-file ~/server.env ${{ env.SERVER_IMAGE }}:latest
+      docker run -d --restart always --name socket -p 8000:8000 --env-file ~/socket.env ${{ env.SOCKET_IMAGE }}:latest
+    EOF
