@@ -1,0 +1,85 @@
+name: CI/CD to AWS ECR and EC2
+
+on:
+  push:
+    branches: [main]
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_ACCOUNT_ID: ${{ secrets.ECR_ACCOUNT_ID }}
+  CLIENT_IMAGE: ${{ secrets.ECR_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/client
+  SERVER_IMAGE: ${{ secrets.ECR_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/server
+  SOCKET_IMAGE: ${{ secrets.ECR_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/socket
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Create .env files if you use env secrets (skip if not needed)
+      - name: Create client .env
+        run: echo "${{ secrets.CLIENT_ENV }}" > ./client/.env
+
+      - name: Create server .env
+        run: echo "${{ secrets.SERVER_ENV }}" > ./server/.env
+
+      - name: Create socket .env
+        run: echo "${{ secrets.SOCKET_ENV }}" > ./socket/.env
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - name: Build and push client
+        run: |
+          docker build -t client ./client
+          docker tag client:latest $CLIENT_IMAGE:latest
+          docker push $CLIENT_IMAGE:latest
+
+      - name: Build and push server
+        run: |
+          docker build -t server ./server
+          docker tag server:latest $SERVER_IMAGE:latest
+          docker push $SERVER_IMAGE:latest
+
+      - name: Build and push socket
+        run: |
+          docker build -t socket ./socket
+          docker tag socket:latest $SOCKET_IMAGE:latest
+          docker push $SOCKET_IMAGE:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create EC2 SSH Key
+        run: |
+          echo "${{ secrets.EC2_KEY }}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+
+      - name: Deploy containers on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+            docker pull $CLIENT_IMAGE:latest
+            docker pull $SERVER_IMAGE:latest
+            docker pull $SOCKET_IMAGE:latest
+
+            docker stop client || true && docker rm client || true
+            docker stop server || true && docker rm server || true
+            docker stop socket || true && docker rm socket || true
+
+            docker run -d --restart always --name client -p 3000:3000 $CLIENT_IMAGE:latest
+            docker run -d --restart always --name server -p 5000:5000 $SERVER_IMAGE:latest
+            docker run -d --restart always --name socket -p 8000:8000 $SOCKET_IMAGE:latest
+          EOF

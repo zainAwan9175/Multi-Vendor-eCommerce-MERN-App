@@ -43,7 +43,7 @@ const WithdrawMoney = () => {
 
     await axios
       .put(
-        `${process.env.REACT_APP_BACKEND_URL}/api/shop/update-payment-methods`,
+        `${process.env.REACT_APP_BACKEND_URL}/shop/update-payment-methods`,
         {
           withdrawMethod,
         },
@@ -80,7 +80,7 @@ const WithdrawMoney = () => {
       const amount = withdrawAmount;
       await axios
         .post(
-          `${process.env.REACT_APP_BACKEND_URL}/api/withdraw/create-withdraw-request`,
+          `${process.env.REACT_APP_BACKEND_URL}/withdraw/create-withdraw-request`,
           { amount },
           { withCredentials: true }
         )

@@ -27,7 +27,7 @@ const AllCoupons = () => {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/coupon/get-coupon/${seller._id}`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/coupon/get-coupon/${seller._id}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -41,7 +41,7 @@ const AllCoupons = () => {
 
   const handleDelete = async (id) => {
     axios
-      .delete(`${process.env.REACT_APP_BACKEND_URL}/api/coupon/delete-coupon/${id}`, { withCredentials: true })
+      .delete(`${process.env.REACT_APP_BACKEND_URL}/coupon/delete-coupon/${id}`, { withCredentials: true })
       .then((res) => {
         toast.success("Coupon code deleted succesfully!");
       });
@@ -53,7 +53,7 @@ const AllCoupons = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/coupon/create-coupon-code`,
+        `${process.env.REACT_APP_BACKEND_URL}/coupon/create-coupon-code`,
         {
           name,
           minAmount,

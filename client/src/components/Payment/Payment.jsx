@@ -84,7 +84,7 @@ const Payment = () => {
     };
 
     await axios
-      .post(`${process.env.REACT_APP_BACKEND_URL}/api/order/create-order`, order, config)
+      .post(`${process.env.REACT_APP_BACKEND_URL}/order/create-order`, order, config)
       .then((res) => {
         setOpen(false);
         navigate("/order/success");
@@ -110,7 +110,7 @@ const Payment = () => {
       };
 
       const responce  = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/payment/process`,
+        `${process.env.REACT_APP_BACKEND_URL}/payment/process`,
         paymentData,
         config
       );
@@ -135,7 +135,7 @@ const Payment = () => {
           };
     
           await axios
-            .post(`${process.env.REACT_APP_BACKEND_URL}/api/order/create-order`, order, config)
+            .post(`${process.env.REACT_APP_BACKEND_URL}/order/create-order`, order, config)
             .then((res) => {
               setOpen(false);
               navigate("/order/success");
@@ -165,7 +165,7 @@ const Payment = () => {
     };
 
     await axios
-      .post(`${process.env.REACT_APP_BACKEND_URL}/api/order/create-order`, order, config)
+      .post(`${process.env.REACT_APP_BACKEND_URL}/order/create-order`, order, config)
       .then((res) => {
         setOpen(false);
         navigate("/order/success");

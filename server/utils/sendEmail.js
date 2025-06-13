@@ -9,7 +9,7 @@ const sendEmail = async (options) => {
         service:process.env.SMTP_SERVICE,
         auth:{
             user:process.env.SMTP_MAIL,
-            pass:process.env.SMTp_Password,
+            pass:process.env.SMTP_Password,
         }
     })
 
@@ -47,7 +47,8 @@ const sendEmail = async (options) => {
     });
   } catch (error) {
     console.log(error);
-    next(new ErrorHandler(500, error.message));
+ throw new ErrorHandler(500, "Failed to send email: " + error.message);
+
 
   }
 };

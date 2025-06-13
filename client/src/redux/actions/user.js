@@ -7,7 +7,7 @@ export const loadUser = () => async (dispatch) => {
     });
 
     // Await the axios call
-    const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/getuser`, {
+    const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user/getuser`, {
       withCredentials: true,
     });
 
@@ -36,7 +36,7 @@ export const loadSeller = () => async (dispatch) => {
     });
 
     // Await the axios call
-    const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/shop/getSeller`, {
+    const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/shop/getSeller`, {
       withCredentials: true,
     });
 
@@ -66,7 +66,7 @@ export const updateUserInformation =
       });
 
       const { data } = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/api/user/update-user-info`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/update-user-info`,
         {
           email,
           password,
@@ -104,7 +104,7 @@ export const updatUserAddress =
       });
 
       const { data } = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/api/user/update-user-addresses`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/update-user-addresses`,
         {
           country,
           city,
@@ -139,7 +139,7 @@ export const deleteUserAddress = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.delete(
-      `${process.env.REACT_APP_BACKEND_URL}/api/user/delete-user-address/${id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/user/delete-user-address/${id}`,
       { withCredentials: true }
     );
 

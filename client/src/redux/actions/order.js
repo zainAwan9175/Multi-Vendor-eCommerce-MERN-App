@@ -9,7 +9,7 @@ export const loadOrder = (userId) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/api/order/get-all-orders/${userId}`
+      `${process.env.REACT_APP_BACKEND_URL}/order/get-all-orders/${userId}`
     );
 
     dispatch({
@@ -32,7 +32,7 @@ export const getAllOrdersOfShop = (shopId) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/api/order/get-seller-all-orders/${shopId}`
+      `${process.env.REACT_APP_BACKEND_URL}/order/get-seller-all-orders/${shopId}`
     );
 
     dispatch({
@@ -54,7 +54,7 @@ export const getAllOrdersOfAdmin = () => async (dispatch) => {
       type: "adminAllOrdersRequest",
     });
 
-    const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/order/admin-all-orders`, {
+    const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/order/admin-all-orders`, {
       withCredentials: true,
     });
 

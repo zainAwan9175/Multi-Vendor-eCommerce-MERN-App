@@ -26,7 +26,7 @@ app.use(cors({
 
 // Sample route
 app.get('/', (req, res) => {
-  res.send('API is running...');
+  res.send('API is running..');
 });
 
 const user = require("./controller/userController");

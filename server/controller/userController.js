@@ -18,18 +18,23 @@ cloudinary.config({
 router.post(
   "/create-user",
   catchAsyncError(async (req, res, next) => {
-    console.log(req.body)
-    const { name, email, password } = req.body;
-    
-    const userEmail = await User.findOne({ email });
+    console.log("Received data:", req.body);
 
-    if (userEmail) {
-        return next(
-            new ErrorHandler(400, `user with this email ${email} already exists.`)
-          );
+    const { name, email, password, file } = req.body;
+
+    if (!name || !email || !password || !file) {
+      return next(new ErrorHandler(400, "All fields are required"));
     }
 
-    const myCloud = await cloudinary.v2.uploader.upload(req.body.file, {
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return next(
+        new ErrorHandler(400, `User with this email ${email} already exists.`)
+      );
+    }
+
+    const myCloud = await cloudinary.v2.uploader.upload(file, {
       folder: "avatar",
       width: 150,
       crop: "scale",
@@ -41,26 +46,26 @@ router.post(
       password,
       avatar: {
         public_id: myCloud.public_id,
-        url: myCloud.url,
+        url: myCloud.secure_url,
       },
     };
 
     const activation_token = createActivationToken(user);
-    const activationUrl = `http://localhost:3000/activate/${activation_token}`;
+    const activationUrl = `http://3.108.51.142/activate/${activation_token}`;
 
     try {
-      sendEmail({
+      await sendEmail({
         email: user.email,
-        subject: `Complete your signup by clicking the link inside`,
-        emailMessage: `Hi ${user.name}!
-        This is activation Url: ${activationUrl}`,
+        subject: "Complete your signup by clicking the link inside",
+        emailMessage: `Hi ${user.name}!\n\nClick the following link to activate your account:\n\n${activationUrl}`,
       });
+
       res.status(201).json({
         success: true,
-        message: `please check your email:- ${user.email} to activate your account!`,
+        message: `Please check your email (${user.email}) to activate your account.`,
       });
     } catch (error) {
-      return next(new ErrorHandler(400, error.message));
+            new ErrorHandler(500, "Failed to send email: " + error.message);
     }
   })
 );
