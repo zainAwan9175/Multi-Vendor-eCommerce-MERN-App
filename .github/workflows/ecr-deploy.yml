@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Create .env files if you use env secrets (skip if not needed)
+      # Optional: create .env files locally (needed only if your Docker build uses them)
       - name: Create client .env
         run: echo "${{ secrets.CLIENT_ENV }}" > ./client/.env
 
@@ -71,6 +71,11 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
+            # Create .env files on EC2 from secrets (be careful with permissions)
+            echo '${{ secrets.CLIENT_ENV }}' > ~/client.env
+            echo '${{ secrets.SERVER_ENV }}' > ~/server.env
+            echo '${{ secrets.SOCKET_ENV }}' > ~/socket.env
+
             docker pull $CLIENT_IMAGE:latest
             docker pull $SERVER_IMAGE:latest
             docker pull $SOCKET_IMAGE:latest
@@ -79,7 +84,7 @@ jobs:
             docker stop server || true && docker rm server || true
             docker stop socket || true && docker rm socket || true
 
-            docker run -d --restart always --name client -p 3000:3000 $CLIENT_IMAGE:latest
-            docker run -d --restart always --name server -p 5000:5000 $SERVER_IMAGE:latest
-            docker run -d --restart always --name socket -p 8000:8000 $SOCKET_IMAGE:latest
+            docker run -d --restart always --name client -p 3000:3000 --env-file ~/client.env $CLIENT_IMAGE:latest
+            docker run -d --restart always --name server -p 5000:5000 --env-file ~/server.env $SERVER_IMAGE:latest
+            docker run -d --restart always --name socket -p 8000:8000 --env-file ~/socket.env $SOCKET_IMAGE:latest
           EOF
